@@ -1,16 +1,29 @@
 import React, { FC } from "react";
 import styled from "styled-components/native";
 //custom components
+// import {
+//   Container,
+//   BigText,
+//   FormInput,
+//   RegularButton,
+//   Loader,
+// } from "@presentation/components";
+// import { Validation } from "@presentation/protocols";
+// import { Authentication } from "@domain/useCase";
+// import { LoggedOutStackParams } from "@main/navigators/LoggedOutStack";
+
 import {
   Container,
   BigText,
   FormInput,
   RegularButton,
   Loader,
-} from "@presentation/components";
-import { Validation } from "@presentation/protocols";
-import { Authentication } from "@domain/useCase";
-import { LoggedOutStackParams } from "@main/navigators/LoggedOutStack";
+} from "../../../../../components";
+import { Validation } from "../../..";
+import { Authentication } from "../../../../../../domain/useCase";
+import { LoggedOutStackParams } from "../../../../../../main/navigators/LoggedOutStack";
+
+
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 // import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -38,14 +51,9 @@ const FormSection = styled.View`
 type Props = {
   validation: Validation;
   authentication: Authentication;
-  loginStart: any;
 };
 
-const Login: FC<Props> = ({
-  validation,
-  authentication,
-  loginStart,
-}: Props) => {
+const Login: FC<Props> = ({ validation, authentication }: Props) => {
   const navigation: NavigationProps = useNavigation();
   const [inputs, setInputs] = React.useState({
     email: "",
@@ -83,21 +91,12 @@ const Login: FC<Props> = ({
 
   const handleSubmit = async (): Promise<void> => {
     try {
-      // loginStart({
-      //   authentication:authentication,
-      //   email: inputs.email,
-      //   password: inputs.password,
-      // });
       setLoading(true);
       const account = await authentication.auth({
         email: inputs.email,
         password: inputs.password,
       });
       if (account.token) {
-        setInputs({
-          email: "",
-          password: "",
-        });
         navigation.navigate("Users");
         showMessage({
           message: "Logged in successfully!",
@@ -122,7 +121,6 @@ const Login: FC<Props> = ({
         <FormSection>
           <FormInput
             onChangeText={(text) => handleOnchange(text, "email")}
-            value={inputs.email}
             onFocus={() => handleError(null, "email")}
             onBlur={() => handleError(null, "email")}
             iconName="email-outline"
@@ -135,7 +133,6 @@ const Login: FC<Props> = ({
           />
           <FormInput
             onChangeText={(text) => handleOnchange(text, "password")}
-            value={inputs.password}
             onFocus={() => handleError(null, "password")}
             onBlur={() => handleError(null, "password")}
             iconName="lock-outline"

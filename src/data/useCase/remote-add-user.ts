@@ -5,7 +5,7 @@ import { InvalidCredentialsError, UnexpectedError } from "@domain/errors";
 export class RemoteAddUser implements User {
   constructor(
     private readonly url: string,
-    private readonly httpClient: HttpClient<RemoteAddUser.Model>
+    private readonly httpClient: HttpClient<RemoteAddUser.Model>    
   ) {}
   async add(params: User.Params): Promise<User.Model> {
     const httpResponse = await this.httpClient.request({
@@ -13,6 +13,7 @@ export class RemoteAddUser implements User {
       method: HttpMethod.POST,
       body: params,
     });
+    
     const remoteResponse: any = httpResponse.body || {};
     switch (httpResponse.statusCode) {
       case HttpStatusCode.success:
