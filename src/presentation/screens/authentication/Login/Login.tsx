@@ -10,16 +10,8 @@ import {
 } from "@presentation/components";
 import { Validation } from "@presentation/protocols";
 import { Authentication } from "@domain/useCase";
-import { LoggedOutStackParams } from "@main/navigators/LoggedOutStack";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
-// import { NativeStackScreenProps } from "@react-navigation/native-stack";
-// import { RootStackParams } from "../../../../main/navigators/RootStack";
-import { showMessage } from "react-native-flash-message";
-
-type NavigationProps = NativeStackScreenProps<LoggedOutStackParams, "Login">;
-
-// type Props = NativeStackScreenProps<LoggedOutStackParams, "Login">;
+import {RootStateOrAny,  useSelector, useDispatch } from "react-redux";
+import { login } from "./redux/loginAction";
 
 const LoginContainer = styled(Container)`
   flex: 1;
@@ -38,21 +30,16 @@ const FormSection = styled.View`
 type Props = {
   validation: Validation;
   authentication: Authentication;
-  loginStart: any;
 };
 
-const Login: FC<Props> = ({
-  validation,
-  authentication,
-  loginStart,
-}: Props) => {
-  const navigation: NavigationProps = useNavigation();
+const Login: FC<Props> = ({ validation, authentication }: Props) => {
+  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state:RootStateOrAny) => state.login);
   const [inputs, setInputs] = React.useState({
     email: "",
     password: "",
   });
   const [errors, setErrors] = React.useState({ email: null, password: null });
-  const [loading, setLoading] = React.useState(false);
   const validate = () => {
     let isValid = true;
     if (!inputs.email) {
@@ -70,48 +57,20 @@ const Login: FC<Props> = ({
       isValid = false;
     }
     if (isValid) {
-      handleSubmit();
+      dispatch(
+        login({
+          authentication: authentication,
+          email: inputs.email,
+          password: inputs.password,
+        })
+      );
     }
   };
-
   const handleOnchange = (text, input) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
   };
   const handleError = (error, input) => {
     setErrors((prevState) => ({ ...prevState, [input]: error }));
-  };
-
-  const handleSubmit = async (): Promise<void> => {
-    try {
-      // loginStart({
-      //   authentication:authentication,
-      //   email: inputs.email,
-      //   password: inputs.password,
-      // });
-      setLoading(true);
-      const account = await authentication.auth({
-        email: inputs.email,
-        password: inputs.password,
-      });
-      if (account.token) {
-        setInputs({
-          email: "",
-          password: "",
-        });
-        navigation.navigate("Users");
-        showMessage({
-          message: "Logged in successfully!",
-          type: "success",
-        });
-      }
-      setLoading(false);
-    } catch (error) {
-      showMessage({
-        message: `${error}`,
-        type: "danger",
-      });
-      setLoading(false);
-    }
   };
   return (
     <>
@@ -155,7 +114,7 @@ const Login: FC<Props> = ({
           />
         </FormSection>
       </LoginContainer>
-      {loading && <Loader label="Requesting..." />}
+      {isLoading && <Loader label="Requesting..." />}
     </>
   );
 };

@@ -43,7 +43,7 @@ const UserDetailContent = ({ userDetail }: Props) => {
           </RegularText>
         </ProfileDetailLeftRow>
         <SmallText textStyles={{ fontSize: 14, textTransform: "capitalize" }}>
-          {userDetail.first_name}
+          {userDetail.first_name} {userDetail.last_name}
         </SmallText>
       </ProfileDetailRow>
 

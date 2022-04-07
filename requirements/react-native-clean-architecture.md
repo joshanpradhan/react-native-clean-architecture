@@ -16,7 +16,7 @@ We have four screens where this API can be used:
 
 - Login Screen ----> User will be redirected to login screen on the first launch of an app and user are expected to enter the correct credentials for access of the app. Note: use email:"eve.holt@reqres.in" and password:"cityslicka" for successful login. As, there is no signup feature on this app. API URl used in this screen: "https://reqres.in/api/login"
 
-- User List screen----> After successful login, user will be redirected to this screen where list of users will be shown. Also there is a add button at the bottom right corner which can redirect user to add new user. API URl used in this screen: "https://reqres.in/api/users?delay=3". Delay here indicates delayed response to show shimmering effects.
+- User List screen----> After successful login, user will be redirected to this screen where list of users will be shown. Also there is a add button at the bottom right corner which can redirect user to add new user. API URl used in this screen: "https://reqres.in/api/users
 
 - User detail ----> Whenever user touches the card of user on user list screen, user will be redirected to this screen, where the details of user like avatar, email, name etc will be shown. API URl used in this screen: "https://reqres.in/api/users/id".
 

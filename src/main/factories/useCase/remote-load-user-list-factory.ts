@@ -5,6 +5,6 @@ import { RemoteLoadUserList } from '@data/useCase'
 
 
 export const makeRemoteLoadUserList = (): LoadUserList =>
-  new RemoteLoadUserList(makeApiUrl('/api/users?delay=3'), makeAuthorizeHttpClientDecorator())
+  new RemoteLoadUserList(makeApiUrl('/api/users'), makeAuthorizeHttpClientDecorator())
 
 

@@ -1,13 +1,14 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import styled from "styled-components/native";
 import { FloatingButton } from "@presentation/components";
 import { AddIcon } from "@presentation/assets/icons";
 import { LoadUserList } from "@domain/useCase";
 import { UserListItem, ShimmeringListItem } from "./components";
-import { showMessage } from "react-native-flash-message";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { LoggedInStackParams } from "@main/navigators/LoggedInStack";
+import { RootStateOrAny, useSelector, useDispatch } from "react-redux";
+import { userList as fetchUserList } from "./redux/userListAction";
 
 type NavigationProps = NativeStackScreenProps<LoggedInStackParams, "AddUser">;
 
@@ -21,34 +22,20 @@ const UsersContainer = styled.View`
   background-color: white;
 `;
 
-const Users: FC<Props> = ({ loadUserList }: Props) => {
+const Users: FC<Props> = ({ loadUserList }) => {
   const navigation: NavigationProps = useNavigation();
-  const [loadingUsersList, setLoadingUsersList] = useState(true);
-  const [users, setUsers] = useState<any[]>([]);
-  const handleChange = (users) => {
-    setUsers(users.data);
-    setLoadingUsersList(false);
-  };
+  const dispatch = useDispatch();
+  const { userList, isLoading } = useSelector(
+    (state: RootStateOrAny) => state.userList
+  );
+
   useEffect(() => {
-    loadUserList
-      .loadAll()
-      .then((users) => handleChange(users))
-      .catch((error) => {
-        showMessage({
-          message: `${error}`,
-          type: "danger",
-        });
-        setLoadingUsersList(false);
-      });
+    dispatch(fetchUserList({ loadUserList }));
   }, []);
   return (
     <>
       <UsersContainer>
-        {loadingUsersList ? (
-          <ShimmeringListItem />
-        ) : (
-          <UserListItem users={users} />
-        )}
+        {isLoading ? <ShimmeringListItem /> : <UserListItem users={userList} />}
       </UsersContainer>
       <FloatingButton
         onPress={() => navigation.navigate("AddUser")}

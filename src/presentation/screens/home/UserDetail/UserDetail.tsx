@@ -1,13 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components/native";
-
 import { LoadUserDetail } from "@domain/useCase";
-import {
-  UserDetailContent,
-  ShimmeringContent,
-} from "./components";
-
-import { showMessage } from "react-native-flash-message";
+import { UserDetailContent, ShimmeringContent } from "./components";
+import { RootStateOrAny,useSelector, useDispatch } from "react-redux";
+import { userDetail as fetchUserDetail } from "./redux/userDetailAction";
 
 const UserDetailContainer = styled.View`
   flex: 1;
@@ -17,28 +13,16 @@ type Props = {
   loadUserDetail: LoadUserDetail;
 };
 const UserDetail = ({ loadUserDetail }: Props) => {
-  const [loadingUserDetail, setLoadingUserDetail] = useState(true);
-  const [userDetail, setUserDetail] = useState<any>({});
-  const handleSuccess = (user) => {
-    setUserDetail(user.data);
-    setLoadingUserDetail(false);
-  };
+  const dispatch = useDispatch();
+  const { userDetail, isLoading } = useSelector((state:RootStateOrAny) => state.userDetail);
+
   useEffect(() => {
-    loadUserDetail
-      .load()
-      .then((user) => handleSuccess(user))
-      .catch((error) => {
-        showMessage({
-          message: `${error}`,
-          type: "danger",
-        });
-        setLoadingUserDetail(false);
-      });
+    dispatch(fetchUserDetail({ loadUserDetail }));
   }, []);
 
   return (
     <UserDetailContainer>
-      {loadingUserDetail ? (
+      {isLoading ? (
         <ShimmeringContent />
       ) : (
         <UserDetailContent userDetail={userDetail} />

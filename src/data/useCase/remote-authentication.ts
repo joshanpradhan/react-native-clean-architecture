@@ -1,9 +1,6 @@
 import { HttpClient, HttpStatusCode, HttpMethod } from "@data/protocols/http";
 import { Authentication } from "@domain/useCase";
-import {
-  InvalidCredentialsError,
-  UnexpectedError,
-} from "@domain/errors";
+import { InvalidCredentialsError, UnexpectedError } from "@domain/errors";
 
 export class RemoteAuthentication implements Authentication {
   constructor(
@@ -16,7 +13,6 @@ export class RemoteAuthentication implements Authentication {
       method: HttpMethod.POST,
       body: params,
     });
-    console.log("params",params)
     const remoteResponse: any = httpResponse.body || {};
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
